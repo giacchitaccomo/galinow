@@ -2,3 +2,5 @@ app.py
 config.txt
 cache/
 __pycache__/
+.env
+

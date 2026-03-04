@@ -7,6 +7,7 @@ import json #debugging iniziale
 from flask import Flask, render_template
 
 
+
 path = pathlib.Path(__file__).parent #first i retrieve the full path (the one with main.py), and then i retreive the dir main is in with .parent
 
 
