@@ -29,7 +29,10 @@ def save_cache(cache, path, file):
     dizionario come argomento, salva nel file il dizionario jsonificato
     """
     
-    path = path / "cache" / file
+    cache_dir = path / "cache"
+    cache_dir.mkdir(parents=True, exist_ok=True) 
+    
+    full_path = cache_dir / file
     
     with open(path, "w") as o:
         json.dump(cache, o, indent=4) #scrive in cache con argomento tree
