@@ -5,6 +5,8 @@ import pathlib
 from datetime import datetime, timedelta
 import json #debugging iniziale
 from flask import Flask, render_template
+import os
+
 
 
 path = pathlib.Path(__file__).parent #first i retrieve the full path (the one with main.py), and then i retreive the dir main is in with .parent
@@ -39,11 +41,7 @@ def compiti():
     return render_template("compiti.html")
 
 
-def main():
-    app.run(debug=False)
-    pass
-    
   
   
 if __name__ == "__main__":
-    main()
+    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

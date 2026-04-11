@@ -52,11 +52,7 @@ files = {
 
 def initialize(path):
     
-    not_online = True
-    print(" Online? y if yes anything if else")
-    ans = input("> ")
-    if ans.lower() == "y":
-        not_online = False
+    not_online = False
         
     
     if not_online:
@@ -72,7 +68,7 @@ def initialize(path):
 
     else:
         # ONLINE: fetch from server and rebuild caches
-        info = fetch(path)
+        info = fetch()
         info = catalog_info(info, path)
 
         headers = info["headers"]

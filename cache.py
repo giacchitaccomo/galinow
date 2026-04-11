@@ -1,43 +1,37 @@
 
-import logging
+import os
 import json
+import logging
+from pathlib import Path
 
-
-    
-        
-def fetch_cache(path, file):
+def save_cache(cache_data, folder_path, filename):
     """
-    cerca nella cache il file argomento, lo restituisce come dict
+    Saves a dictionary as a JSON file in the 'cache' folder.
     """
+    # 1. Define the directory and ensure it exists
+    cache_dir = folder_path / "cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
     
+    # 2. Define the full file path (DON'T overwrite 'folder_path')
+    full_file_path = cache_dir / filename
     
-    path = path / "cache" / file
-    
-    with  open(path, "r") as t:
-        answer = json.load(t)
+    # 3. Open the file and write
+    with open(full_file_path, "w") as o:
+        json.dump(cache_data, o, indent=4)
         
-    messaggio_successo = file + " successfully read"
-        
-    logging.debug(messaggio_successo)   
-    
-    return answer
+    logging.debug(f"{filename} updated correctly")
 
-
-
-def save_cache(cache, path, file):
+def fetch_cache(folder_path, filename):
     """
-    dizionario come argomento, salva nel file il dizionario jsonificato
+    Reads a JSON file from the 'cache' folder.
     """
+    full_file_path = folder_path / "cache" / filename
     
-    path = path / "cache" / file
-    
-    with open(path, "w") as o:
-        json.dump(cache, o, indent=4) #scrive in cache con argomento tree
-        
-    message_success = file + " updated correctly"
-        
-    logging.debug(message_success)
-    
-    return 
-
-
+    try:
+        with open(full_file_path, "r") as t:
+            answer = json.load(t)
+        logging.debug(f"{filename} successfully read")
+        return answer
+    except FileNotFoundError:
+        logging.warning(f"Cache {filename} not found.")
+        return {}

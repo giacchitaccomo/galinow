@@ -1,4 +1,6 @@
 app.py
 config.txt
-cache/
 __pycache__/
+.env
+cache/*
+!cache/materie_corrette.txt
