@@ -50,13 +50,13 @@ files = {
     "orario_html" : "orario_html.txt"
 }
 
-def initialize(path):
+def initialize(path, username, password):
     
     not_online = True
-    print(" Online? y if yes anything if else")
-    ans = input("> ")
-    if ans.lower() == "y":
-        not_online = False
+    # print(" Online? y if yes anything if else")
+    # ans = input("> ")
+    # if ans.lower() == "y":
+    #     not_online = False
         
     
     if not_online:
@@ -72,7 +72,7 @@ def initialize(path):
 
     else:
         # ONLINE: fetch from server and rebuild caches
-        info = fetch(path)
+        info = fetch(username, password)
         info = catalog_info(info, path)
 
         headers = info["headers"]
