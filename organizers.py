@@ -52,7 +52,7 @@ files = {
 
 def initialize(path, username, password):
     
-    not_online = True
+    not_online = False
     # print(" Online? y if yes anything if else")
     # ans = input("> ")
     # if ans.lower() == "y":
