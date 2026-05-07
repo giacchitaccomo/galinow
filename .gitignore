@@ -1,5 +1,6 @@
-flask_session/
-cache/
+/flask_session/
+/cache/*
+!/cache/materie_corrette.txt
 __pycache__/
 .env
 *.pyc

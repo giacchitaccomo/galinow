@@ -1,0 +1,17 @@
+{
+    "Disegno e storia dell'arte":        ["Arte", 0],
+    "ED. CIVICA":                        ["IRC", 0],
+    "Filosofia":                         ["Filosofia", 0],
+    "FISICA":                            ["FISICA", 0],
+    "INFORMATICA":                       ["INFORMATICA", 0],
+    "INGLESE":                           ["INGLESE", 0],
+    "Lab.Matematica integrativo":        ["Lab Matematica", 1],
+    "Laboratorio Fisica":                ["Lab Fisica", 0],
+    "Lab.Scienze":                       ["Lab Scienze", 1],
+    "LINGUA E LETTERATURA ITALIANA":     ["Italiano", 0],
+    "MATEMATICA":                        ["MATEMATICA", 0],
+    "RELIGIONE":                         ["RELIGIONE", 0],
+    "SCIENZE MOTORIE E SPORTIVE":        ["Ed. Fisica", 0],
+    "SCIENZE NATURALI":                  ["Scienze", 0],
+    "STORIA":                            ["STORIA", 0]
+}
