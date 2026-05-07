@@ -22,8 +22,8 @@ logging.basicConfig(
   
 
 app = Flask(__name__)
-# app.secret_key = os.getenv('SECRET_KEY')
-app.secret_key = "chiave"
+app.secret_key = os.getenv('SECRET_KEY')
+
 
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"

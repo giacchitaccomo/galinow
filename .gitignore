@@ -3,3 +3,4 @@ config.txt
 cache/
 __pycache__/
 flask_session
+.env
