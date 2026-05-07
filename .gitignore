@@ -1,6 +1,5 @@
-app.py
-config.txt
+flask_session/
 cache/
 __pycache__/
-flask_session
 .env
+*.pyc

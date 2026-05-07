@@ -9,7 +9,8 @@ from functools import wraps
 
 
 path = pathlib.Path(__file__).parent #first i retrieve the full path (the one with main.py), and then i retreive the dir main is in with .parent
-
+if not os.path.exists(os.path.join(path, "cache")):
+    os.makedirs(os.path.join(path, "cache")) #non so se ho bisogno di /cache ma nel caso
 
 logging.basicConfig(
     level=logging.DEBUG,
