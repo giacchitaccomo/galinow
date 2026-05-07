@@ -52,7 +52,7 @@ files = {
 
 def initialize(path, username, password):
     
-    not_online = True
+    not_online = False
     # print(" Online? y if yes anything if else")
     # ans = input("> ")
     # if ans.lower() == "y":
@@ -89,7 +89,7 @@ def initialize(path, username, password):
         orario = fetch_online(headers, urls["orario"])
         orario, orario_html = catalog_orario(orario, path, materie)
 
-    return voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html
+    return voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html, info
     
   
     
@@ -114,7 +114,7 @@ def categorize_subjects(subjects, path):
 
 def catalog_info(answer, path):
     """
-    ricava alcune info utili dal blocco restituito al login
+    ricava alcune info utili dal blocco restituito al login : nome, indirizzo, classe, token, scuola, anno_scolastico
     """
     
     
@@ -124,6 +124,8 @@ def catalog_info(answer, path):
     info["indirizzo"] = answer["studenti"][0]["anni"][0]["indirizzo"]
     info["classe"] = answer["studenti"][0]["anni"][0]["classe"]
     info["token"] = answer["token"]
+    info["scuola"] = answer["studenti"][0]["id_scuola"]
+    info["anno_scolastico"] = answer["studenti"][0]["anni"][0]["id"]
     
     headers = {
         "authorization" : "JWT " + info["token"]

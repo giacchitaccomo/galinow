@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Compiti</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/navbar.css') }}"
@@ -25,21 +25,119 @@
     />
   </head>
   <body>
-    <div>
-      <nav class="navbar">
-        <a href="{{ url_for('index') }}"
-          ><img
-            class="navbar-logo"
-            src="{{ url_for('static', filename='img/widget.png') }}"
-            alt="logo"
-        /></a>
-        <ul class="navbar-menu">
-          <li><a href="{{ url_for('orario_settimanale') }}">orario</a></li>
-          <li><a href="{{ url_for('compiti') }}">compiti</a></li>
-          <li><a href="{{ url_for('voti') }}">voti</a></li>
-        </ul>
-      </nav>
+    {% include "navbar.html" %}
+    <div style="max-width: 800px; margin: 20px auto; padding: 0 20px">
+      <select
+        name="subject"
+        id="subject-filter"
+        style="
+          padding: 8px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+          width: 100%;
+          max-width: 300px;
+        "
+      >
+        <option value="all">Tutte le materie</option>
+        {% for materia in materie.values() %}
+        <option value="{{ materia.nome }}">{{ materia.nome }}</option>
+        {% endfor %}
+      </select>
     </div>
-    <p>compiti</p>
+    <div class="homework-feed">
+      <div id="no-homework-msg" style="display: none" class="day-group">
+        <div
+          class="homework-card"
+          style="border-left-color: #6c757d; text-align: center"
+        >
+          <p class="assignment-text">
+            Nessun compito trovato per questa materia.
+          </p>
+        </div>
+      </div>
+      {% for data, lista_compiti in compiti_time.items() %}
+
+      <!-- The bigger, less evident container for the whole day -->
+      <div class="day-group">
+        <h2 class="date-header">{{ data }}</h2>
+
+        <div class="cards-layout">
+          {% for compito in lista_compiti %}
+
+          <!-- The single subject card that pops -->
+          <div class="homework-card" data-subject="{{ compito.materia }}">
+            <div class="card-header">
+              <span class="subject-badge">{{ compito.materia }}</span>
+            </div>
+            <p class="assignment-text">{{ compito.consegna | safe}}</p>
+          </div>
+
+          {% endfor %}
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+
+    <script>
+      document
+        .getElementById("subject-filter")
+        .addEventListener("change", function (event) {
+          let selectedSubject = event.target.value;
+
+          let allCards = document.querySelectorAll(".homework-card");
+
+          for (let card of allCards) {
+            // ADD THIS LINE: If this card is inside the empty message, ignore it!
+            if (card.closest("#no-homework-msg")) continue;
+
+            let cardSubject = card.getAttribute("data-subject");
+
+            if (selectedSubject === "all" || cardSubject === selectedSubject) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          }
+
+          let allDayGroups = document.querySelectorAll(".day-group");
+          // We start by assuming everything is hidden
+          let allInvisible = true;
+
+          for (let group of allDayGroups) {
+            // Make sure we don't accidentally check our new hidden message container!
+            if (group.id === "no-homework-msg") continue;
+
+            let cardsInGroup = group.querySelectorAll(".homework-card");
+            let hasVisibleCards = false;
+
+            for (let card of cardsInGroup) {
+              if (card.style.display !== "none") {
+                hasVisibleCards = true;
+                allInvisible = false; // We found at least one card!
+                break;
+              }
+            }
+
+            if (hasVisibleCards) {
+              group.style.display = "block";
+            } else {
+              group.style.display = "none";
+            }
+          }
+          // <--- THE LOOP ENDS HERE
+
+          // NOW we evaluate the final result
+          let noHomeworkMsg = document.getElementById("no-homework-msg");
+
+          if (allInvisible) {
+            // If we checked everything and found nothing, show the message
+            noHomeworkMsg.style.display = "block";
+          } else {
+            // Otherwise, keep it hidden
+            noHomeworkMsg.style.display = "none";
+          }
+        });
+    </script>
   </body>
 </html>

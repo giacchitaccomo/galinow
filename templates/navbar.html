@@ -1,0 +1,14 @@
+<nav class="navbar">
+  <a href="{{ url_for('index') }}"
+    ><img
+      class="navbar-logo"
+      src="{{ url_for('static', filename='img/widget.png') }}"
+      alt="logo"
+  /></a>
+  <ul class="navbar-menu">
+    <li><a href="{{ url_for('orario_settimanale') }}">orario</a></li>
+    <li><a href="{{ url_for('compiti') }}">compiti</a></li>
+    <li><a href="{{ url_for('voti') }}">voti</a></li>
+    <li><a href="{{ url_for('logout')}}">logout</a></li>
+  </ul>
+</nav>

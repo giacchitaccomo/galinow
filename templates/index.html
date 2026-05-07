@@ -26,22 +26,14 @@
   </head>
 
   <body>
-    <div>
-      <nav class="navbar">
-        <a href="{{ url_for('index') }}"
-          ><img
-            class="navbar-logo"
-            src="{{ url_for('static', filename='img/widget.png') }}"
-            alt="logo"
-        /></a>
-        <ul class="navbar-menu">
-          <li><a href="{{ url_for('orario_settimanale') }}">orario</a></li>
-          <li><a href="{{ url_for('compiti') }}">compiti</a></li>
-          <li><a href="{{ url_for('voti') }}">voti</a></li>
-        </ul>
-      </nav>
-    </div>
+    <div>{% include "navbar.html" %}</div>
 
-    <!-- parole chiave - registro elettronico widget galilei crema  -->
+    <h3>Ciao, {{ info["nome"] }}</h3>
+    <h3>da qualche parte, {{ info["anno_scolastico"] }}</h3>
+    <h3>{{ info["classe"] }} - {{ info["indirizzo"] }}</h3>
+    <p>media + vedi di piu</p>
+    <p>compiti imminenti + vedi di piu</p>
+    <p>materie di oggi + vdp</p>
+    <p>privacy policy</p>
   </body>
 </html>

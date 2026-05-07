@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Voti</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/navbar.css') }}"
@@ -25,21 +25,129 @@
     />
   </head>
   <body>
-    <div>
-      <nav class="navbar">
-        <a href="{{ url_for('index') }}"
-          ><img
-            class="navbar-logo"
-            src="{{ url_for('static', filename='img/widget.png') }}"
-            alt="logo"
-        /></a>
-        <ul class="navbar-menu">
-          <li><a href="{{ url_for('orario_settimanale') }}">orario</a></li>
-          <li><a href="{{ url_for('compiti') }}">compiti</a></li>
-          <li><a href="{{ url_for('voti') }}">voti</a></li>
-        </ul>
-      </nav>
+    {% include "navbar.html" %}
+    <!-- THE FILTER DROPDOWN -->
+    <div style="max-width: 800px; margin: 20px auto; padding: 0 20px">
+      <select
+        name="subject"
+        id="subject-filter"
+        style="
+          padding: 8px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+          width: 100%;
+          max-width: 300px;
+        "
+      >
+        <option value="all">Tutte le materie</option>
+        {% for materia in materie.values() %}
+        <option value="{{ materia.nome }}">{{ materia.nome }}</option>
+        {% endfor %}
+      </select>
     </div>
-    <p>voti</p>
+
+    <!-- THE GRADES FEED -->
+    <div class="homework-feed">
+      <!-- Hidden "No Grades" Message -->
+      <div id="no-homework-msg" style="display: none" class="day-group">
+        <div
+          class="homework-card"
+          style="border-left-color: #6c757d; text-align: center"
+        >
+          <p class="assignment-text">Nessun voto trovato per questa materia.</p>
+        </div>
+      </div>
+
+      <!-- Outer Loop: The Dates -->
+      {% for data, lista_voti in voti_time.items() %}
+      <div class="day-group">
+        <h2 class="date-header">{{ data }}</h2>
+
+        <div class="cards-layout">
+          <!-- Inner Loop: The Grades for that date -->
+          {% for voto in lista_voti %}
+          <div class="homework-card" data-subject="{{ voto.materia }}">
+            <!-- Header with Subject and the actual Grade -->
+            <div
+              class="card-header"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span class="subject-badge">{{ voto.materia }}</span>
+
+              <!-- Grade Logic: Green (>=6), Red (<6), Gray (Pending) -->
+              <strong>
+                {% if voto.valore %} {{ voto.valore }} {% else %} Assente {%
+                endif %}
+              </strong>
+            </div>
+
+            <!-- Grade Details -->
+            <p class="assignment-text">
+              <strong>{{ voto.tipo }}:</strong> {{ voto.argomento | safe }}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- THE JAVASCRIPT FILTER -->
+    <!-- (This is perfectly identical to the homework one, so it works immediately) -->
+    <script>
+      document
+        .getElementById("subject-filter")
+        .addEventListener("change", function (event) {
+          let selectedSubject = event.target.value;
+          let allCards = document.querySelectorAll(".homework-card");
+
+          for (let card of allCards) {
+            if (card.closest("#no-homework-msg")) continue;
+
+            let cardSubject = card.getAttribute("data-subject");
+
+            if (selectedSubject === "all" || cardSubject === selectedSubject) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          }
+
+          let allDayGroups = document.querySelectorAll(".day-group");
+          let allInvisible = true;
+
+          for (let group of allDayGroups) {
+            if (group.id === "no-homework-msg") continue;
+
+            let cardsInGroup = group.querySelectorAll(".homework-card");
+            let hasVisibleCards = false;
+
+            for (let card of cardsInGroup) {
+              if (card.style.display !== "none") {
+                hasVisibleCards = true;
+                allInvisible = false;
+                break;
+              }
+            }
+
+            if (hasVisibleCards) {
+              group.style.display = "block";
+            } else {
+              group.style.display = "none";
+            }
+          }
+
+          let noHomeworkMsg = document.getElementById("no-homework-msg");
+          if (allInvisible) {
+            noHomeworkMsg.style.display = "block";
+          } else {
+            noHomeworkMsg.style.display = "none";
+          }
+        });
+    </script>
   </body>
 </html>

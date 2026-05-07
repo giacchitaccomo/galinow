@@ -37,7 +37,7 @@ def login_required(f):
     
     @wraps(f)
     def decorated(*args, **kwargs):
-        if not request.cookies.get("logged_in"):
+        if not session.get("logged_in"):
             return redirect(url_for("login"))
         else:
             return f(*args, **kwargs)
@@ -48,7 +48,7 @@ def login_required(f):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+        return render_template("index.html", info=session["info"])
 
 
 @app.route("/orario_settimanale")
@@ -59,13 +59,18 @@ def orario_settimanale():
 @app.route("/voti")
 @login_required
 def voti():
-    return render_template("voti.html")
+    return render_template("voti.html", voti_time = session["voti_time"], materie= session["materie"])
 
 @app.route("/compiti")
 @login_required
 def compiti():
-    return render_template("compiti.html")
+    return render_template("compiti.html", compiti_time = session["compiti_time"], materie=session["materie"])
 
+@app.route("/logout")
+@login_required
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -82,30 +87,37 @@ def login():
         auto = False
     else:
         # se no è un get, tento di recuperare le credenziali tramite cookie
-        username = request.cookies.get("username")
-        password = request.cookies.get("password")
+        # username = request.cookies.get("username")
+        # password = request.cookies.get("password")
+        username = session.get("username") 
+        password = session.get("password")       
         auto = True
 
     # se username e pw != None
     if username and password:
         try:
             # provo a usarli per il login
-            voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html = initialize(path, username, password)
+            voti_materia, voti_time, compiti_materia, compiti_time, materie, orario, orario_html, info = initialize(path, username, password)
 
             # salvataggio dati pesanti lato server, non permanente
             session["voti_materia"] = voti_materia
-            session["voti_tempo"] = voti_tempo
+            session["voti_time"] = voti_time
             session["compiti_materia"] = compiti_materia
             session["compiti_time"] = compiti_time
             session["materie"] = materie
             session["orario"] = orario
             session["orario_html"] = orario_html
+            info["anno_scolastico"].replace("_", "/")   #2025_2026 -> 2025/2026            
+            session["info"] = info
 
             # CREAZIONE RISPOSTA CON REDIRECT + COOKIE
             resp = make_response(redirect(url_for("index")))
-            resp.set_cookie("username", username, max_age=60*60*24*7) # 7 giorni
-            resp.set_cookie("password", password, max_age=60*60*24*7)
-            resp.set_cookie("logged_in", "True", max_age=60*60*24*7)
+            # resp.set_cookie("username", username, max_age=60*60*24*7) # 7 giorni
+            # resp.set_cookie("password", password, max_age=60*60*24*7)
+            # resp.set_cookie("logged_in", "True", max_age=60*60*24*7)
+            session["username"] = username  # 7 giorni
+            session["password"] = password 
+            session["logged_in"] = True 
             
             return resp
 
@@ -117,8 +129,9 @@ def login():
             else:
                 # se GET => fallimento auto login, credenziali non valide, reset
                 resp = make_response(render_template("login.html", error=None))
-                resp.set_cookie("username", "", expires=0)
-                resp.set_cookie("password", "", expires=0)
+                session.pop("username", None)
+                session.pop("password", None)
+               
                 return resp
     elif not auto: # se non ho username e pw e non si tratta di un tentativo automatico
         error = "Inserire username e password"
