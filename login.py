@@ -25,4 +25,8 @@ def fetch(username, password):
     except Exception as e:
         print(f"ERRORE DECODIFICA JSON (Login): {e}")
         print(f"Testo grezzo ricevuto: {answer.text}")
+<<<<<<< HEAD
         return {"error": "Il server della scuola ha restituito una risposta non valida."}
+=======
+        return {"error": "Il server della scuola ha restituito una risposta non valida."}
+>>>>>>> 59a912620f6c3e9179cc24da52c52f33804e44c5
