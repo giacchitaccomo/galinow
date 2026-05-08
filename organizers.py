@@ -102,7 +102,7 @@ def categorize_subjects(subjects, path):
     materie = {}
    
     
-    logging.info(f"Le materie sono {subjects}")
+    
     if type(subjects) == list:
         for x in subjects:
             prof = x["professori"][0]["nome"]
@@ -136,6 +136,8 @@ def catalog_info(answer, path):
     info["scuola"] = answer["studenti"][0]["id_scuola"]
     info["anno_scolastico"] = answer["studenti"][0]["anni"][0]["id"]
     info["studente_id"] = answer["studenti"][0]["id"]
+    
+    logging.info(f"--------------------- {info["nome"].upper()} è entrato! ---------------------")
     
     headers = {
         "authorization" : "JWT " + info["token"]
