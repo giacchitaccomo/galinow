@@ -31,13 +31,14 @@ def get_day(date):
 
 
 
-urls = {
-    "materie" : "https://galilei-cr-sito.registroelettronico.com/api/v3/scuole/galilei-cr/studenti/1008147/2025_2026/materie_nextapi/" , #per ora funziona solo con me (1008147)
-    "compiti" : "https://galilei-cr-sito.registroelettronico.com/api/v3/scuole/galilei-cr/studenti/1008147/2025_2026/compiti_plain/",
-    "voti" : "https://galilei-cr-sito.registroelettronico.com/api/v3/scuole/galilei-cr/studenti/1008147/2025_2026/voti_plain/",
-    "orario" : f"https://galilei-cr-sito.registroelettronico.com/api/v3/scuole/galilei-cr/studenti/1008147/2025_2026/orario_plain/?data_inizio={inizio}&data_fine={fine}"
-    
-}
+def build_urls(studente_id, anno_scolastico):
+    base = "https://galilei-cr-sito.registroelettronico.com/api/v3/scuole/galilei-cr/studenti"
+    return {
+        "materie": f"{base}/{studente_id}/{anno_scolastico}/materie_nextapi/",
+        "compiti": f"{base}/{studente_id}/{anno_scolastico}/compiti_plain/",
+        "voti": f"{base}/{studente_id}/{anno_scolastico}/voti_plain/",
+        "orario": f"{base}/{studente_id}/{anno_scolastico}/orario_plain/?data_inizio={inizio}&data_fine={fine}"
+    }
 
 files = {
     "compiti_time" : "compiti_time.txt",
@@ -77,6 +78,7 @@ def initialize(path, username, password):
         info = catalog_info(info, path)
 
         headers = info["headers"]
+        urls = build_urls(info["studente_id"], info["anno_scolastico"])
 
         materie_raw = fetch_online(headers, urls["materie"])
         materie = categorize_subjects(materie_raw, path)
@@ -133,6 +135,7 @@ def catalog_info(answer, path):
     info["token"] = answer["token"]
     info["scuola"] = answer["studenti"][0]["id_scuola"]
     info["anno_scolastico"] = answer["studenti"][0]["anni"][0]["id"]
+    info["studente_id"] = answer["studenti"][0]["id"]
     
     headers = {
         "authorization" : "JWT " + info["token"]
