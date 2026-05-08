@@ -98,20 +98,24 @@ def initialize(path, username, password):
     
 def categorize_subjects(subjects, path):   
     materie = {}
+   
     
-    
-    for x in subjects:
-        prof = x["professori"][0]["nome"]
-        nome = x["nome_materia_sito"]
-        id_materia = x["id"]
+    logging.info(f"Le materie sono {subjects}")
+    if type(subjects) == list:
+        for x in subjects:
+            prof = x["professori"][0]["nome"]
+            nome = x["nome_materia_sito"]
+            id_materia = x["id"]
+            
+            materie[id_materia] = {
+                "professore" : prof,
+                "nome" : nome,  
+            }
         
-        materie[id_materia] = {
-            "professore" : prof,
-            "nome" : nome,  
-        }
-    
-    save_cache(materie, path, files["materie"] )
-    
+        save_cache(materie, path, files["materie"] )
+    else:
+        raise Exception("Invalid data type")
+        
     return materie     
         
 

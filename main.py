@@ -133,7 +133,7 @@ def login():
                 return redirect(url_for("index"))
 
         except Exception as exc:
-            logging.exception("Login failed")
+            logging.exception("Random exception")
             if request.method == "POST":
                 error = f"Errore di accesso: {exc}"
             else:

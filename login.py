@@ -18,7 +18,6 @@ def fetch(username, password):
     status_code = answer.status_code
     logging.debug(f"Il codice della risposta è {status_code}")
     if status_code> 399:
-        logging.debug(f"Il codice della risposta è maggiore di 399. ({status_code})")
         return status_code
     
     
