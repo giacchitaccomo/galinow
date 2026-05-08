@@ -53,10 +53,7 @@ files = {
 def initialize(path, username, password):
     
     not_online = False
-    # print(" Online? y if yes anything if else")
-    # ans = input("> ")
-    # if ans.lower() == "y":
-    #     not_online = False
+    
         
     
     if not_online:
@@ -72,7 +69,11 @@ def initialize(path, username, password):
 
     else:
         # ONLINE: fetch from server and rebuild caches
+        logging.debug("Tentativo di Login con credenziali INIZIO")
         info = fetch(username, password)
+        if type(info) == int: #se è un intero
+            return info
+        logging.debug("Informazioni Iniziali Ritornate OK")
         info = catalog_info(info, path)
 
         headers = info["headers"]
@@ -88,8 +89,10 @@ def initialize(path, username, password):
         
         orario = fetch_online(headers, urls["orario"])
         orario, orario_html = catalog_orario(orario, path, materie)
+        
+        logging.debug("Catalogato Tutto OK")
 
-    return voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html, info
+    return [voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html, info]
     
   
     
@@ -132,7 +135,6 @@ def catalog_info(answer, path):
         } 
  
     info["headers"] = headers
-    logging.debug("Info categorized successfully")
     save_cache(info, path, files["info"])
     return info
 

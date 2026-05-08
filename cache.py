@@ -34,9 +34,9 @@ def save_cache(cache, path, file):
     with open(path, "w") as o:
         json.dump(cache, o, indent=4) #scrive in cache con argomento tree
         
-    message_success = file + " updated correctly"
+    # message_success = file + " updated correctly"
         
-    logging.debug(message_success)
+    # logging.debug(message_success)
     
     return 
 

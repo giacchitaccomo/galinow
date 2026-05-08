@@ -30,6 +30,11 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_FILE_DIR"] = "./flask_session"
 
+logging.getLogger("urllib3").setLevel(logging.WARNING) 
+logging.getLogger("werkzeug").setLevel(logging.INFO)
+#nasconde i log di debug di requests e flask
+
+
 Session(app)
 
 
@@ -97,48 +102,51 @@ def login():
     # se username e pw != None
     if username and password:
         try:
-            # provo a usarli per il login
-            voti_materia, voti_time, compiti_materia, compiti_time, materie, orario, orario_html, info = initialize(path, username, password)
-
-            # salvataggio dati pesanti lato server, non permanente
-            session["voti_materia"] = voti_materia
-            session["voti_time"] = voti_time
-            session["compiti_materia"] = compiti_materia
-            session["compiti_time"] = compiti_time
-            session["materie"] = materie
-            session["orario"] = orario
-            session["orario_html"] = orario_html
-            info["anno_scolastico"].replace("_", "/")   #2025_2026 -> 2025/2026            
-            session["info"] = info
-
-            # CREAZIONE RISPOSTA CON REDIRECT + COOKIE
-            resp = make_response(redirect(url_for("index")))
-            # resp.set_cookie("username", username, max_age=60*60*24*7) # 7 giorni
-            # resp.set_cookie("password", password, max_age=60*60*24*7)
-            # resp.set_cookie("logged_in", "True", max_age=60*60*24*7)
-            session["username"] = username  # 7 giorni
-            session["password"] = password 
-            session["logged_in"] = True 
+            response = initialize(path, username, password)
             
-            return resp
+            # Match the return type (string "500")
+            if type(response) == int:
+                error = f"Account inesistente / {response}"
+                # We don't return resp here, we let it fall through to render_template
+            else:
+                # Unpack the list
+                voti_materia, voti_time, compiti_materia, compiti_time, materie, orario, orario_html, info = response
+
+                # Update dictionary (strings must be reassigned)
+                info["anno_scolastico"] = info["anno_scolastico"].replace("_", "/")
+
+                # Save to session
+                session.update({
+                    "voti_materia": voti_materia,
+                    "voti_time": voti_time,
+                    "compiti_materia": compiti_materia,
+                    "compiti_time": compiti_time,
+                    "materie": materie,
+                    "orario": orario,
+                    "orario_html": orario_html,
+                    "info": info,
+                    "username": username,
+                    "password": password,
+                    "logged_in": True
+                })
+
+                return redirect(url_for("index"))
 
         except Exception as exc:
             logging.exception("Login failed")
-            # Se POST => è fallito un login manuale
             if request.method == "POST":
                 error = f"Errore di accesso: {exc}"
             else:
-                # se GET => fallimento auto login, credenziali non valide, reset
-                resp = make_response(render_template("login.html", error=None))
-                session.pop("username", None)
-                session.pop("password", None)
-               
-                return resp
-    elif not auto: # se non ho username e pw e non si tratta di un tentativo automatico
+                # Clear session on failed auto-login
+                session.clear() 
+                return render_template("login.html", error=None)
+
+    elif not auto:
         error = "Inserire username e password"
 
+    # Final fallback for errors or missing credentials
     return render_template("login.html", error=error)
-        
+            
 
 
 def main():
