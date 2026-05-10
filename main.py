@@ -65,12 +65,12 @@ def orario_settimanale():
 @app.route("/voti")
 @login_required
 def voti():
-    return render_template("voti.html", voti_time = session["voti_time"], materie= session["materie"])
+    return render_template("voti.html", voti_time = session["voti_time"], materie= session["materie2"])
 
 @app.route("/compiti")
 @login_required
 def compiti():
-    return render_template("compiti.html", compiti_time = session["compiti_time"], materie=session["materie"])
+    return render_template("compiti.html", compiti_time = session["compiti_time"], materie=session["materie2"])
 
 @app.route("/logout")
 @login_required
@@ -110,7 +110,7 @@ def login():
                 # We don't return resp here, we let it fall through to render_template
             else:
                 # Unpack the list
-                voti_materia, voti_time, compiti_materia, compiti_time, materie, orario, orario_html, info = response
+                voti_materia, voti_time, compiti_materia, compiti_time, materie, orario, orario_html, info, materie2 = response
 
                 # Update dictionary (strings must be reassigned)
                 info["anno_scolastico"] = info["anno_scolastico"].replace("_", "/")
@@ -127,9 +127,10 @@ def login():
                     "info": info,
                     "username": username,
                     "password": password,
+                    "materie2" : materie2, 
                     "logged_in": True
                 })
-
+                
                 return redirect(url_for("index"))
 
         except Exception as exc:

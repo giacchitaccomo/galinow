@@ -81,7 +81,7 @@ def initialize(path, username, password):
         urls = build_urls(info["studente_id"], info["anno_scolastico"])
 
         materie_raw = fetch_online(headers, urls["materie"])
-        materie = categorize_subjects(materie_raw, path)
+        materie, materie2 = categorize_subjects(materie_raw, path)
 
         compiti_raw = fetch_online(headers, urls["compiti"])
         compiti_materia, compiti_time = catalog_compiti(compiti_raw, path)
@@ -94,31 +94,39 @@ def initialize(path, username, password):
         
         logging.debug("Catalogato Tutto OK")
 
-    return [voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html, info]
+    return [voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html, info, materie2]
     
   
     
 def categorize_subjects(subjects, path):   
     materie = {}
+    materie2 = {}
    
     
+    for x in subjects:
+        prof = x["professori"][0]["nome"]
+        nome = x["descrizione"]
+        id_materia = x["id"]
+        
+        materie2[id_materia] = {
+            "professore" : prof,
+            "nome" : nome,  
+        }
+        
+    for x in subjects:
+        prof = x["professori"][0]["nome"]
+        nome = x["nome_materia_sito"]
+        id_materia = x["id"]
+        
+        materie[id_materia] = {
+            "professore" : prof,
+            "nome" : nome,  
+        }
     
-    if type(subjects) == list:
-        for x in subjects:
-            prof = x["professori"][0]["nome"]
-            nome = x["nome_materia_sito"]
-            id_materia = x["id"]
-            
-            materie[id_materia] = {
-                "professore" : prof,
-                "nome" : nome,  
-            }
+    save_cache(materie, path, files["materie"] )
+
         
-        save_cache(materie, path, files["materie"] )
-    else:
-        raise Exception("Invalid data type")
-        
-    return materie     
+    return materie, materie2     
         
 
 def catalog_info(answer, path):
