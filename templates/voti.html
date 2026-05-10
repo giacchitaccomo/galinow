@@ -26,19 +26,8 @@
   </head>
   <body>
     {% include "navbar.html" %}
-    <!-- THE FILTER DROPDOWN -->
     <div style="max-width: 800px; margin: 20px auto; padding: 0 20px">
-      <select
-        name="subject"
-        id="subject-filter"
-        style="
-          padding: 8px;
-          border-radius: 6px;
-          border: 1px solid #ccc;
-          width: 100%;
-          max-width: 300px;
-        "
-      >
+      <select name="subject" id="subject-filter">
         <option value="all">Tutte le materie</option>
         {% for materia in materie.values() %}
         <option value="{{ materia.nome }}">{{ materia.nome }}</option>
@@ -46,46 +35,29 @@
       </select>
     </div>
 
-    <!-- THE GRADES FEED -->
     <div class="homework-feed">
-      <!-- Hidden "No Grades" Message -->
-      <div id="no-homework-msg" style="display: none" class="day-group">
-        <div
-          class="homework-card"
-          style="border-left-color: #6c757d; text-align: center"
-        >
+      <div id="no-homework-msg" class="day-group">
+        <div class="homework-card">
           <p class="assignment-text">Nessun voto trovato per questa materia.</p>
         </div>
       </div>
 
-      <!-- Outer Loop: The Dates -->
       {% for data, lista_voti in voti_time.items() %}
       <div class="day-group">
         <h2 class="date-header">{{ data }}</h2>
 
         <div class="cards-layout">
-          <!-- Inner Loop: The Grades for that date -->
           {% for voto in lista_voti %}
           <div class="homework-card" data-subject="{{ voto.materia }}">
-            <!-- Header with Subject and the actual Grade -->
-            <div
-              class="card-header"
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-              "
-            >
+            <div class="card-header">
               <span class="subject-badge">{{ voto.materia }}</span>
 
-              <!-- Grade Logic: Green (>=6), Red (<6), Gray (Pending) -->
               <strong>
                 {% if voto.valore %} {{ voto.valore }} {% else %} Assente {%
                 endif %}
               </strong>
             </div>
 
-            <!-- Grade Details -->
             <p class="assignment-text">
               <strong>{{ voto.tipo }}:</strong> {{ voto.argomento | safe }}
             </p>
@@ -96,8 +68,6 @@
       {% endfor %}
     </div>
 
-    <!-- THE JAVASCRIPT FILTER -->
-    <!-- (This is perfectly identical to the homework one, so it works immediately) -->
     <script>
       document
         .getElementById("subject-filter")

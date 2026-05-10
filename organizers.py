@@ -212,34 +212,6 @@ def catalog_orario(orario, path, materie):
     return orario_ordinato, orario_html
     
 
-
-#migliorato
-# def catalog_compiti(compiti):
-#     answer = {}
-    
-    
-#     data_compito = namedtuple("data_compito", ["year", "month", "day", "hour"])
-    
-#     for x in compiti:
-#         nome = x["sottotitolo"]
-#         consegna = x["assegnazioni"]
-        
-#         d = x["data"]
-#         tempo = data_compito(
-#             d[0:4],
-#             d[5:7],
-#             d[8:10],
-#             d[11:16]
-#             )
-        
-#         answer[tempo] = {
-#             "data" : tempo,
-#             "materia" : nome, 
-#             "consegna" : consegna
-#         }
-        
-#     return answer
-
 def parse_ISO(d):
     month, day = d[5:7], d[8:10]
     s = str(month) + "-" + str(day)

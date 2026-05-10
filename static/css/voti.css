@@ -8,19 +8,17 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* --- THE DAY CONTAINER (Bigger, Less Evident) --- */
 .day-group {
-    background-color: #f8f9fa; /* Very subtle light gray */
+    background-color: #f8f9fa;
     border-radius: 12px;
     padding: 24px;
     margin-bottom: 32px;
-    /* Optional: A tiny inset shadow makes it look indented into the page */
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03); 
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .date-header {
     font-size: 1.2rem;
-    color: #6c757d; /* Muted gray text */
+    color: #6c757d;
     margin-top: 0;
     margin-bottom: 20px;
     border-bottom: 2px solid #e9ecef;
@@ -28,26 +26,21 @@
     font-weight: 600;
 }
 
-/* Grid layout to stack the cards nicely */
 .cards-layout {
     display: flex;
     flex-direction: column;
-    gap: 16px; /* Space between each subject card */
+    gap: 16px;
 }
 
-/* --- THE SINGLE SUBJECT CARD (Good Looking, Pops out) --- */
 .homework-card {
-    background-color: #ffffff; /* Pure white to stand out against the gray day-group */
+    background-color: #ffffff;
     border-radius: 8px;
     padding: 16px 20px;
-    /* Soft drop shadow to lift it off the page */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
-    /* A nice blue accent border on the left */
-    border-left: 5px solid #007bff; 
+    border-left: 5px solid #007bff;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Hover effect so it feels interactive */
 .homework-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -57,11 +50,10 @@
     margin-bottom: 8px;
 }
 
-/* Styling the subject name to look like a neat tag/badge */
 .subject-badge {
     font-size: 0.8rem;
     font-weight: 700;
-    color: #007bff; /* Matches the left border */
+    color: #007bff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -71,4 +63,27 @@
     color: #333333;
     font-size: 0.95rem;
     line-height: 1.5;
+}
+
+#subject-filter {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 300px;
+}
+
+#no-homework-msg {
+    display: none;
+}
+
+#no-homework-msg .homework-card {
+    border-left-color: #6c757d;
+    text-align: center;
+}
+
+.homework-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
