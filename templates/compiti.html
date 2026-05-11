@@ -68,16 +68,17 @@
       document
         .getElementById("subject-filter")
         .addEventListener("change", function (event) {
-          let selectedSubject = event.target.value;
+          let selectedSubject = event.target.value; //selected.value
 
-          let allCards = document.querySelectorAll(".homework-card");
+          let allCards = document.querySelectorAll(".homework-card"); //all html elements with class == homework card
 
           for (let card of allCards) {
-            if (card.closest("#no-homework-msg")) continue;
+            if (card.closest("#no-homework-msg")) continue; //la card non è nel #no hw msg div
 
             let cardSubject = card.getAttribute("data-subject");
 
             if (selectedSubject === "all" || cardSubject === selectedSubject) {
+              //mostra / nascondi
               card.style.display = "block";
             } else {
               card.style.display = "none";
@@ -108,7 +109,7 @@
             }
           }
 
-          let noHomeworkMsg = document.getElementById("no-homework-msg");
+          let noHomeworkMsg = document.getElementById("no-homework-msg"); //mostra / nascondi nessun compito
 
           if (allInvisible) {
             noHomeworkMsg.style.display = "block";
