@@ -26,6 +26,12 @@
   </head>
 
   <body>
+    <div
+      id="voti"
+      data-grades="{{ voti | tojson | safe }}" 
+      style="display: none"
+      <!-- dataset.grades -->
+    ></div>
     <div>{% include "navbar.html" %}</div>
 
     <h3>Ciao, {{ info["nome"] }}</h3>
@@ -35,5 +41,34 @@
     <p>compiti imminenti + vedi di piu</p>
     <p>materie di oggi + vdp</p>
     <p>privacy policy</p>
+    <div class="container-avg" id="container-avg">
+      <select name="subject" id="subject-filter">
+        <option value="all">Tutte le materie</option>
+        {% for materia in materie.values() %}
+        <option value="{{ materia.nome }}">{{ materia.nome }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="quadrimestre" id="quadrimestre">
+        <option value="primo">Primo</option>
+        <option value="secondo">Secondo</option>
+        <option value="entrambi">Entrambi</option>
+      </select>
+      <p class="media" id="media">Prova</p>
+    </div>
+    <script>
+      let votiElemento = document.getElementById("voti");
+      console.log(votiElemento.dataset.grades)
+      const voti = JSON.parse(votiElemento.dataset.grades);
+      console.log(voti);
+
+      let quadrimestre = document.getElementById("quadrimestre");
+      let materia = document.getElementById("subject");
+
+      quadrimestre.addEventListener("change", compute);
+      materia.addEventListener("change", compute);
+
+      function compute(e) {}
+    </script>
   </body>
 </html>

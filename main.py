@@ -54,7 +54,8 @@ def login_required(f):
 @app.route("/")
 @login_required
 def index():
-        return render_template("index.html", info=session["info"])
+    print(session["voti_time"])
+    return render_template("index.html", info=session["info"], materie = session["materie"], voti=session["voti_time"])
 
 
 @app.route("/orario_settimanale")
@@ -118,7 +119,7 @@ def login():
                 # Save to session
                 session.update({
                     "voti_materia": voti_materia,
-                    "voti_time": voti_time,
+                    "voti_time": dict(voti_time),
                     "compiti_materia": compiti_materia,
                     "compiti_time": compiti_time,
                     "materie": materie,

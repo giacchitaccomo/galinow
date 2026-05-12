@@ -1,1 +1,5 @@
-@import url("navbar.css")
+@import url("navbar.css");
+
+.container-avg {
+    margin-left: 5%;
+}

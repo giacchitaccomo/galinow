@@ -17,7 +17,7 @@
 }
 
 .date-header {
-    font-size: 1.2rem;
+    font-size: 20px;
     color: #6c757d;
     margin-top: 0;
     margin-bottom: 20px;
@@ -51,7 +51,7 @@
 }
 
 .subject-badge {
-    font-size: 0.8rem;
+    font-size: 16px;
     font-weight: 700;
     color: #007bff;
     text-transform: uppercase;

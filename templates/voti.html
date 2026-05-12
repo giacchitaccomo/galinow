@@ -52,7 +52,7 @@
             <div class="card-header">
               <span class="subject-badge">{{ voto.materia }}</span>
 
-              <strong>
+              <strong id="grade">
                 {% if voto.valore %} {{ voto.valore }} {% else %} Assente {%
                 endif %}
               </strong>
@@ -82,6 +82,18 @@
 
             if (selectedSubject === "all" || cardSubject === selectedSubject) {
               card.style.display = "block";
+              let grade = card.querySelector("#grade").innerHTML;
+              let color = card.style;
+
+              if (grade < 6) {
+                color.borderLeft = "5px solid #e74c3c";
+              } else if (grade < 7.5) {
+                color.borderLeft = "5px solid #f1c40f";
+              } else {
+                color.borderLeft = "5px solid #2ecc71";
+              }
+
+              color = "yellow";
             } else {
               card.style.display = "none";
             }
