@@ -54,7 +54,6 @@ def login_required(f):
 @app.route("/")
 @login_required
 def index():
-    print(session["voti_time"])
     return render_template("index.html", info=session["info"], materie = session["materie"], voti=session["voti_time"])
 
 
