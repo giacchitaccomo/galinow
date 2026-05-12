@@ -69,67 +69,72 @@
     </div>
 
     <script>
+      logic("all"); //logica dei colori dall'inizio
       document
         .getElementById("subject-filter")
-        .addEventListener("change", function (event) {
-          let selectedSubject = event.target.value;
-          let allCards = document.querySelectorAll(".homework-card");
-
-          for (let card of allCards) {
-            if (card.closest("#no-homework-msg")) continue;
-
-            let cardSubject = card.getAttribute("data-subject");
-
-            if (selectedSubject === "all" || cardSubject === selectedSubject) {
-              card.style.display = "block";
-              let grade = card.querySelector("#grade").innerHTML;
-              let color = card.style;
-
-              if (grade < 6) {
-                color.borderLeft = "5px solid #e74c3c";
-              } else if (grade < 7.5) {
-                color.borderLeft = "5px solid #f1c40f";
-              } else {
-                color.borderLeft = "5px solid #2ecc71";
-              }
-
-              color = "yellow";
-            } else {
-              card.style.display = "none";
-            }
-          }
-
-          let allDayGroups = document.querySelectorAll(".day-group");
-          let allInvisible = true;
-
-          for (let group of allDayGroups) {
-            if (group.id === "no-homework-msg") continue;
-
-            let cardsInGroup = group.querySelectorAll(".homework-card");
-            let hasVisibleCards = false;
-
-            for (let card of cardsInGroup) {
-              if (card.style.display !== "none") {
-                hasVisibleCards = true;
-                allInvisible = false;
-                break;
-              }
-            }
-
-            if (hasVisibleCards) {
-              group.style.display = "block";
-            } else {
-              group.style.display = "none";
-            }
-          }
-
-          let noHomeworkMsg = document.getElementById("no-homework-msg");
-          if (allInvisible) {
-            noHomeworkMsg.style.display = "block";
-          } else {
-            noHomeworkMsg.style.display = "none";
-          }
+        .addEventListener("change", () => {
+          logic(event.target.value);
         });
+
+      function logic(value) {
+        let selectedSubject = value;
+        let allCards = document.querySelectorAll(".homework-card");
+
+        for (let card of allCards) {
+          if (card.closest("#no-homework-msg")) continue;
+
+          let cardSubject = card.getAttribute("data-subject");
+
+          if (selectedSubject === "all" || cardSubject === selectedSubject) {
+            card.style.display = "block";
+            let grade = card.querySelector("#grade").innerHTML;
+            let color = card.style;
+
+            if (grade < 6) {
+              color.borderLeft = "5px solid #e74c3c";
+            } else if (grade < 7.5) {
+              color.borderLeft = "5px solid #f1c40f";
+            } else {
+              color.borderLeft = "5px solid #2ecc71";
+            }
+
+            color = "yellow";
+          } else {
+            card.style.display = "none";
+          }
+        }
+
+        let allDayGroups = document.querySelectorAll(".day-group");
+        let allInvisible = true;
+
+        for (let group of allDayGroups) {
+          if (group.id === "no-homework-msg") continue;
+
+          let cardsInGroup = group.querySelectorAll(".homework-card");
+          let hasVisibleCards = false;
+
+          for (let card of cardsInGroup) {
+            if (card.style.display !== "none") {
+              hasVisibleCards = true;
+              allInvisible = false;
+              break;
+            }
+          }
+
+          if (hasVisibleCards) {
+            group.style.display = "block";
+          } else {
+            group.style.display = "none";
+          }
+        }
+
+        let noHomeworkMsg = document.getElementById("no-homework-msg");
+        if (allInvisible) {
+          noHomeworkMsg.style.display = "block";
+        } else {
+          noHomeworkMsg.style.display = "none";
+        }
+      }
     </script>
   </body>
 </html>
