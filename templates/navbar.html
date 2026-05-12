@@ -5,6 +5,8 @@
       src="{{ url_for('static', filename='img/widget.png') }}"
       alt="logo"
   /></a>
+  <div class="burger" id="burger-menu">&#9776;</div>
+
   <ul class="navbar-menu">
     <li><a href="{{ url_for('orario_settimanale') }}">orario</a></li>
     <li><a href="{{ url_for('compiti') }}">compiti</a></li>
@@ -12,3 +14,16 @@
     <li><a href="{{ url_for('logout')}}">logout</a></li>
   </ul>
 </nav>
+<script>
+  const burger = document.getElementById("burger-menu");
+  const nav = document.querySelector(".navbar-menu");
+  burger.addEventListener("click", () => {
+    nav.classList.toggle("active");
+
+    if (nav.classList.contains("active")) {
+      burger.innerHTML = "&times;";
+    } else {
+      burger.innerHTML = "&#9776;";
+    }
+  });
+</script>
