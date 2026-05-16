@@ -84,10 +84,10 @@ def initialize(path, username, password):
         materie, materie2 = categorize_subjects(materie_raw, path)
 
         compiti_raw = fetch_online(headers, urls["compiti"])
-        compiti_materia, compiti_time = catalog_compiti(compiti_raw, path)
+        compiti_materia, compiti_time = catalog_compiti(compiti_raw, path, materie, materie2)
 
         voti_raw = fetch_online(headers, urls["voti"])
-        voti_materia, voti_tempo = catalog_voti(voti_raw, path)
+        voti_materia, voti_tempo = catalog_voti(voti_raw, path, materie, materie2)
         
         orario = fetch_online(headers, urls["orario"])
         orario, orario_html = catalog_orario(orario, path, materie)
@@ -220,50 +220,98 @@ def catalog_orario(orario, path, materie):
     return orario_ordinato, orario_html
     
 
+
 def parse_ISO(d):
     month, day = d[5:7], d[8:10]
     s = str(month) + "-" + str(day)
     return s
 
 
-def catalog_compiti(compiti, path): 
+def catalog_compiti(compiti, path, materie, materie2): 
     by_materia = defaultdict(list)
     by_time = defaultdict(list)
-    
+
+    # build lookup with normalized keys (lowercase, stripped)
+    name_to_id = {}
+    for mid, info in (materie2 or {}).items():
+        name = (info.get("nome") or "").strip().lower()
+        if name:
+            name_to_id[name] = mid
+    for mid, info in (materie or {}).items():
+        name = (info.get("nome") or "").strip().lower()
+        if name and name not in name_to_id:
+            name_to_id[name] = mid
+
     for x in compiti:
-        materia = x["sottotitolo"]
-        consegna = x["assegnazioni"]
-        d = x["data"]
-        
-        
+        raw_materia = x.get("sottotitolo")
+        consegna = x.get("assegnazioni")
+        d = x.get("data")
         time = parse_ISO(d)
-        
-        by_materia[materia].append({"time" : time, "consegna" : consegna})
-        by_time[time].append({"materia" : materia, "consegna" : consegna})
-        
-        
-        
+
+        id_materia = name_to_id.get((raw_materia or "").strip().lower())
+        canonical_name = raw_materia
+        if id_materia and materie.get(id_materia):
+            canonical_name = materie[id_materia].get("nome", raw_materia)
+
+        by_materia[canonical_name].append({"time": time, "consegna": consegna, "id_materia": id_materia})
+        by_time[time].append({"materia": canonical_name, "consegna": consegna, "id_materia": id_materia})
+
     save_cache(by_materia, path, files["compiti_materia"])
     save_cache(by_time, path, files["compiti_time"])
     return by_materia, by_time #tuple key is faster for filtering 
 
 
-def catalog_voti(voti, path):
+def catalog_voti(voti, path, materie, materie2):
     by_materia = defaultdict(list)
     by_time = defaultdict(list)
-    
+
+    # build lookup from possible subject names to id
+    # build lookup with normalized keys (lowercase, stripped)
+    name_to_id = {}
+    for mid, info in (materie2 or {}).items():
+        name = (info.get("nome") or "").strip().lower()
+        if name:
+            name_to_id[name] = mid
+    for mid, info in (materie or {}).items():
+        name = (info.get("nome") or "").strip().lower()
+        if name and name not in name_to_id:
+            name_to_id[name] = mid
+
     for x in voti:
-        materia = x["titolo"]
-        argomento = x["dettaglio"]
-        tipo = x["sottotitolo"]
-        valore = x["voto_numerico"]
-        time = parse_ISO(x["data"])
-        
-        by_materia[materia].append({"argomento" : argomento, "tipo" : tipo, "valore" : valore, "data" : time})
-        by_time[time].append({"argomento" : argomento, "tipo" : tipo, "valore" : valore, "materia" : materia})
-        
+        raw_title = x.get("titolo")
+        argomento = x.get("dettaglio")
+        tipo = x.get("sottotitolo")
+        valore = x.get("voto_numerico")
+        time = parse_ISO(x.get("data"))
+        quadrimestre = 2 if (time> "01-25" and time < "07-01") else 1
+
+        # resolve id and canonical display name when possible
+        # normalize raw title for lookup
+        raw_key = (raw_title or "").strip().lower()
+        id_materia = name_to_id.get(raw_key)
+        canonical_name = raw_title
+        if id_materia and materie.get(id_materia):
+            canonical_name = materie[id_materia].get("nome", raw_title)
+
+        by_materia[canonical_name].append({
+            "argomento": argomento,
+            "tipo": tipo,
+            "valore": valore,
+            "data": time,
+            "quadrimestre": quadrimestre,
+            "id_materia": id_materia,
+        })
+
+        by_time[time].append({
+            "argomento": argomento,
+            "tipo": tipo,
+            "valore": valore,
+            "materia": canonical_name,
+            "quadrimestre": quadrimestre,
+            "id_materia": id_materia,
+        })
+
     save_cache(by_materia, path, files["voti_materia"])
     save_cache(by_time, path, files["voti_time"])
-        
+
     return by_materia, by_time 
-        

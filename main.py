@@ -54,7 +54,7 @@ def login_required(f):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html", info=session["info"], materie = session["materie"], voti=session["voti_time"])
+    return render_template("index.html", info=session["info"], materie = session["materie"], voti=session["voti_time"], materie2=session.get("materie2"))
 
 
 @app.route("/orario_settimanale")
@@ -65,12 +65,12 @@ def orario_settimanale():
 @app.route("/voti")
 @login_required
 def voti():
-    return render_template("voti.html", voti_time = session["voti_time"], materie= session["materie2"])
+    return render_template("voti.html", voti_time = session["voti_time"], materie= session.get("materie"))
 
 @app.route("/compiti")
 @login_required
 def compiti():
-    return render_template("compiti.html", compiti_time = session["compiti_time"], materie=session["materie2"])
+    return render_template("compiti.html", compiti_time = session["compiti_time"], materie=session.get("materie"))
 
 @app.route("/logout")
 @login_required

@@ -28,47 +28,145 @@
   <body>
     <div
       id="voti"
-      data-grades="{{ voti | tojson | safe }}" 
+      data-grades="{{ voti | tojson | forceescape }}"
       style="display: none"
-      <!-- dataset.grades -->
     ></div>
+    <div
+      id="materie_map"
+      data-materie="{{ materie | tojson | forceescape }}"
+      data-materie2="{{ materie2 | tojson | forceescape }}"
+      style="display: none"
+    ></div>
+
     <div>{% include "navbar.html" %}</div>
 
-    <h3>Ciao, {{ info["nome"] }}</h3>
-    <h3>da qualche parte, {{ info["anno_scolastico"] }}</h3>
-    <h3>{{ info["classe"] }} - {{ info["indirizzo"] }}</h3>
-    <p>media + vedi di piu</p>
-    <p>compiti imminenti + vedi di piu</p>
-    <p>materie di oggi + vdp</p>
-    <p>privacy policy</p>
-    <div class="container-avg" id="container-avg">
-      <select name="subject" id="subject-filter">
-        <option value="all">Tutte le materie</option>
-        {% for materia in materie.values() %}
-        <option value="{{ materia.nome }}">{{ materia.nome }}</option>
-        {% endfor %}
-      </select>
+    <main class="dashboard-container">
+      <!-- Header block -->
+      <header class="welcome-header">
+        <h3>Ciao, {{ info["nome"] }}</h3>
+        <div class="meta-info">
+          <span>Anno Scolastico: {{ info["anno_scolastico"] }}</span> &bull;
+          <span>{{ info["classe"] }} - {{ info["indirizzo"] }}</span>
+        </div>
+      </header>
 
-      <select name="quadrimestre" id="quadrimestre">
-        <option value="primo">Primo</option>
-        <option value="secondo">Secondo</option>
-        <option value="entrambi">Entrambi</option>
-      </select>
-      <p class="media" id="media">Prova</p>
-    </div>
+      <!-- Quick Context Links / Mock Dashboard items -->
+      <section class="quick-grid">
+        <div class="quick-card">
+          <p>Compiti Imminenti</p>
+          <a href="#">Vedi di più</a>
+        </div>
+        <div class="quick-card">
+          <p>Materie di Oggi</p>
+          <a href="#">Vedi registro</a>
+        </div>
+        <div class="quick-card">
+          <p>Privacy Policy</p>
+          <a href="#">Leggi</a>
+        </div>
+      </section>
+
+      <!-- Grade Calculator Interactive Block -->
+      <section class="calculator-section">
+        <h4>Calcolo Media Voti</h4>
+
+        <div class="container-avg" id="container-avg">
+          <div class="select-group">
+            <label for="subject">Materia</label>
+            <select name="subject" id="subject">
+              <option value="all">Tutte le materie</option>
+              {% for materia in materie.values() %}
+              <option value="{{ materia.nome }}">{{ materia.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="select-group">
+            <label for="quadrimestre">Periodo</label>
+            <select name="quadrimestre" id="quadrimestre">
+              <option value="1">Primo Quadrimestre</option>
+              <option value="2">Secondo Quadrimestre</option>
+              <option value="all">Entrambi</option>
+            </select>
+          </div>
+
+          <div class="metric-box">
+            <span>Media</span>
+            <p class="media" id="media">--</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
     <script>
-      let votiElemento = document.getElementById("voti");
-      console.log(votiElemento.dataset.grades)
-      const voti = JSON.parse(votiElemento.dataset.grades);
-      console.log(voti);
+      const votiElemento = document.getElementById("voti");
+      const votiListaRaw = JSON.parse(votiElemento.dataset.grades);
 
-      let quadrimestre = document.getElementById("quadrimestre");
-      let materia = document.getElementById("subject");
+      let votiNew = [];
 
-      quadrimestre.addEventListener("change", compute);
-      materia.addEventListener("change", compute);
+      const materieElem = document.getElementById("materie_map");
+      const materieObj = JSON.parse(materieElem.dataset.materie);
+      const materie2Obj = JSON.parse(materieElem.dataset.materie2 || "{}");
+      const subjMap = {};
 
-      function compute(e) {}
+      // ------------------------------------------
+      for (const id in materie2Obj) {
+        const desc = (materie2Obj[id].nome || "").trim().toLowerCase();
+        const disp =
+          materieObj[id] && materieObj[id].nome
+            ? materieObj[id].nome
+            : materie2Obj[id].nome || "";
+        if (desc) subjMap[desc] = disp;
+      }
+      for (const cat in votiListaRaw) {
+        for (const key in votiListaRaw[cat]) {
+          const rawMat = votiListaRaw[cat][key]["materia"];
+          const mapped = subjMap[(rawMat || "").trim().toLowerCase()] || rawMat;
+          votiNew.push({
+            valore: votiListaRaw[cat][key]["valore"],
+            materia: mapped,
+            quadrimestre: votiListaRaw[cat][key]["quadrimestre"],
+          });
+        }
+      } //fatto con ai per evitare mismatch variabili
+      // ------------------------------------------
+
+      const quadrimestreScelta = document.getElementById("quadrimestre");
+      const materiaScelta = document.getElementById("subject");
+      const scrittaMedia = document.getElementById("media");
+
+      quadrimestreScelta.addEventListener("change", compute);
+      materiaScelta.addEventListener("change", compute);
+
+      compute();
+
+      function compute() {
+        let total = 0;
+        let scored = 0;
+        const quadrimestre = quadrimestreScelta.value;
+        const materia = materiaScelta.value;
+
+        for (const idx in votiNew) {
+          if (
+            (quadrimestre === "all" ||
+              quadrimestre == votiNew[idx]["quadrimestre"]) &&
+            (materia === "all" || materia === votiNew[idx]["materia"])
+          ) {
+            if (votiNew[idx]["valore"]) {
+              total += votiNew[idx]["valore"];
+              scored += 1;
+            }
+          }
+        }
+
+        if (scored > 0) {
+          total = (total / scored).toFixed(1);
+        } else {
+          total = "Nessuno";
+        }
+
+        scrittaMedia.innerText = total;
+      }
     </script>
   </body>
 </html>
