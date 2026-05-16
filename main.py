@@ -5,12 +5,16 @@ import os
 from flask import Flask, render_template, redirect, session, url_for, request, make_response
 from flask_session import Session
 from functools import wraps
+from dotenv import load_dotenv
 
 
 
 path = pathlib.Path(__file__).parent #first i retrieve the full path (the one with main.py), and then i retreive the dir main is in with .parent
 if not os.path.exists(os.path.join(path, "cache")):
     os.makedirs(os.path.join(path, "cache")) #non so se ho bisogno di /cache ma nel caso
+    
+# specifica che esiste un .env nella directory
+load_dotenv(dotenv_path=os.path.join(path, ".env"))
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -24,6 +28,13 @@ logging.basicConfig(
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
+
+
+realUsername = os.getenv('USERNAMER')
+realPassword = os.getenv('PASSWORD')
+dummyUsername = os.getenv('DUMMYUN')
+dummyPassword = os.getenv('DUMMYPW')
+
 
 
 app.config["SESSION_PERMANENT"] = False
@@ -90,6 +101,12 @@ def login():
         session.clear() 
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
+        
+        
+        
+        if username == dummyUsername and password == dummyPassword :
+            username = realUsername
+            password = realPassword
         auto = False
     else:
         # se no è un get, tento di recuperare le credenziali tramite cookie
