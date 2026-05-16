@@ -107,6 +107,8 @@ def login():
         if username == dummyUsername and password == dummyPassword :
             username = realUsername
             password = realPassword
+            logging.debug("Usate le credenziali di prova")
+            
         auto = False
     else:
         # se no è un get, tento di recuperare le credenziali tramite cookie
