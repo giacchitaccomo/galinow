@@ -27,35 +27,36 @@
   <body>
     <div>{% include "navbar.html" %}</div>
     <h1 class="titolo">Orario settimanale</h1>
+    <div class="table-container">
+      <table>
+        <tr>
+          <th>Ora</th>
+          <th class="laterali">Lunedì</th>
+          <th class="laterali">Martedì</th>
+          <th class="laterali">Mercoledì</th>
+          <th class="laterali">Giovedì</th>
+          <th class="laterali">Venerdì</th>
+          <th class="laterali">Sabato</th>
+        </tr>
 
-    <table>
-      <tr>
-        <th>Ora</th>
-        <th class="laterali">Lunedì</th>
-        <th class="laterali">Martedì</th>
-        <th class="laterali">Mercoledì</th>
-        <th class="laterali">Giovedì</th>
-        <th class="laterali">Venerdì</th>
-        <th class="laterali">Sabato</th>
-      </tr>
-
-      {% for ora_idx, contenuto in orario_html.items() %} {% if contenuto ==
-      "PAUSA" %}
-      <tr class="pausa">
-        <td class="laterali"></td>
-        <td colspan="6">Pausa</td>
-      </tr>
-      {% else %}
-      <tr>
-        {# Mostra 1^, 2^... saltando il numero 6 per la pausa #}
-        <td class="laterali">
-          {{ ora_idx|int + 1 if ora_idx|int < 5 else ora_idx|int }}^
-        </td>
-        {% for materia in contenuto %}
-        <td>{{ materia }}</td>
-        {% endfor %}
-      </tr>
-      {% endif %} {% endfor %}
-    </table>
+        {% for ora_idx, contenuto in orario_html.items() %} {% if contenuto ==
+        "PAUSA" %}
+        <tr class="pausa">
+          <td class="laterali"></td>
+          <td colspan="6">Pausa</td>
+        </tr>
+        {% else %}
+        <tr>
+          {# Mostra 1^, 2^... saltando il numero 6 per la pausa #}
+          <td class="laterali">
+            {{ ora_idx|int + 1 if ora_idx|int < 5 else ora_idx|int }}^
+          </td>
+          {% for materia in contenuto %}
+          <td>{{ materia }}</td>
+          {% endfor %}
+        </tr>
+        {% endif %} {% endfor %}
+      </table>
+    </div>
   </body>
 </html>
