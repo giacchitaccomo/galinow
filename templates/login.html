@@ -20,6 +20,7 @@
       href="{{ url_for('static', filename='img/widget_color.png') }}"
       type="image/png"
     />
+    <style></style>
   </head>
   <body>
     <img
@@ -28,22 +29,26 @@
       alt="sfondo"
     />
     <div class="overlay-opaque"></div>
+
     <div class="content">
       <form method="post" action="{{ url_for('login') }}">
         {% if error %}
         <div class="login-error">{{ error }}</div>
         {% endif %}
+
         <input
           name="username"
           class="credenziali-in"
           placeholder="Username"
           type="text"
+          required
         />
         <input
           name="password"
           class="credenziali-in"
           placeholder="Password"
           type="password"
+          required
         />
         <button type="submit">Accedi</button>
       </form>
