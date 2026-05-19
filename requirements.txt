@@ -3,3 +3,4 @@ flask-session
 requests
 gunicorn
 python-dotenv
+beautifulsoup4
