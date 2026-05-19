@@ -52,7 +52,14 @@
             {{ ora_idx|int + 1 if ora_idx|int < 5 else ora_idx|int }}^
           </td>
           {% for materia in contenuto %}
-          <td>{{ materia }}</td>
+          <td>
+            {% if materia and materia != "" %}
+            <div class="materia-nome">{{ materia[0] }}</div>
+
+            {% if materia[1] %}
+            <span class="aula-tag">{{ materia[1] }}</span>
+            {% endif %} {% endif %}
+          </td>
           {% endfor %}
         </tr>
         {% endif %} {% endfor %}

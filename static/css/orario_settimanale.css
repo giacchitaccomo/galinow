@@ -54,3 +54,19 @@ td, th {
   -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
   margin-bottom: 20px;
 }
+
+/* Stile per il nome della materia */
+.materia-nome {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px; /* Crea un leggero spazio verticale prima dell'aula */
+}
+
+/* Stile per l'aula sotto la materia */
+.aula-tag {
+    display: inline-block;
+    font-size: 0.8rem;       /* Rende il testo dell'aula leggermente più piccolo */
+    color: #666;             /* Colore grigio per non appesantire la lettura */
+    text-transform: none;    /* Se preferisci mantenere l'aula in minuscolo/originale */
+    font-weight: 400;
+}

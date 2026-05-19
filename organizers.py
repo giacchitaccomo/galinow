@@ -1,7 +1,7 @@
 import logging
 from collections import defaultdict
 from cache import save_cache, fetch_cache
-from fetchers import fetch_online
+from fetchers import fetch_online, fetch_orario
 from login import fetch
 from datetime import date, timedelta, datetime
 
@@ -89,12 +89,11 @@ def initialize(path, username, password):
         voti_raw = fetch_online(headers, urls["voti"])
         voti_materia, voti_tempo = catalog_voti(voti_raw, path, materie, materie2)
         
-        orario = fetch_online(headers, urls["orario"])
-        orario, orario_html = catalog_orario(orario, path, materie)
+        orario_html = fetch_orario(info["classe"])
         
         logging.debug("Catalogato Tutto OK")
 
-    return [voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario, orario_html, info, materie2]
+    return [voti_materia, voti_tempo, compiti_materia, compiti_time, materie, orario_html, info, materie2]
     
   
     
@@ -156,68 +155,68 @@ def catalog_info(answer, path):
     return info
 
 
-def catalog_orario(orario, path, materie):
-    orario_org = defaultdict(list)
-    corrette = fetch_cache(path, "materie_corrette.txt")
-    last_weight = -1
-    last_seen = ""
-    orario_pulito = []
+# def catalog_orario(orario, path, materie):
+#     orario_org = defaultdict(list)
+#     corrette = fetch_cache(path, "materie_corrette.txt")
+#     last_weight = -1
+#     last_seen = ""
+#     orario_pulito = []
     
-    for x in range(len(orario)):
-        obj = orario[x]
-        nome = materie[obj["id_materia"]]["nome"]
-        weight = corrette[nome][1]
-        ora = obj["data_ora_inizio"]
+#     for x in range(len(orario)):
+#         obj = orario[x]
+#         nome = materie[obj["id_materia"]]["nome"]
+#         weight = corrette[nome][1]
+#         ora = obj["data_ora_inizio"]
         
-        orario_pulito.append(obj)
-        if last_seen == ora:
-            if last_weight > weight:
-                orario_pulito.pop()
-            else:
-                orario_pulito.pop(-2)
+#         orario_pulito.append(obj)
+#         if last_seen == ora:
+#             if last_weight > weight:
+#                 orario_pulito.pop()
+#             else:
+#                 orario_pulito.pop(-2)
                 
-        last_seen = ora
-        last_weight = weight
+#         last_seen = ora
+#         last_weight = weight
 
     
     
-    for obj in orario_pulito:
+#     for obj in orario_pulito:
 
-        orario_org[get_day(obj["data_ora_inizio"][:10])].append(corrette[materie[obj["id_materia"]]["nome"]][0]) 
+#         orario_org[get_day(obj["data_ora_inizio"][:10])].append(corrette[materie[obj["id_materia"]]["nome"]][0]) 
         
 
-    orario_ordinato = dict(sorted(orario_org.items()))
+#     orario_ordinato = dict(sorted(orario_org.items()))
     
-    orario_html = {}
+#     orario_html = {}
 
-    giorni_chiavi = [0, 1, 2, 3, 4, 5] 
-    orario_html = {}
+#     giorni_chiavi = [0, 1, 2, 3, 4, 5] 
+#     orario_html = {}
 
-    for x in range(8):
-        if x == 5:
+#     for x in range(8):
+#         if x == 5:
   
-            orario_html[x] = "PAUSA"
-            continue
+#             orario_html[x] = "PAUSA"
+#             continue
         
-        # x_adj serve per saltare l'indice della pausa
+#         # x_adj serve per saltare l'indice della pausa
   
-        x_adj = x if x < 5 else x - 1
-        riga_ora = []
+#         x_adj = x if x < 5 else x - 1
+#         riga_ora = []
         
-        for g in giorni_chiavi:
-            # orario_ordinato deve essere il dict {giorno: [materie]}
-            materie_giorno = orario_ordinato.get(g, [])
+#         for g in giorni_chiavi:
+#             # orario_ordinato deve essere il dict {giorno: [materie]}
+#             materie_giorno = orario_ordinato.get(g, [])
             
-            if len(materie_giorno) > x_adj:
-                riga_ora.append(materie_giorno[x_adj])
-            else:
-                riga_ora.append("") # Cella vuota se non c'è lezione
+#             if len(materie_giorno) > x_adj:
+#                 riga_ora.append(materie_giorno[x_adj])
+#             else:
+#                 riga_ora.append("") # Cella vuota se non c'è lezione
         
-        orario_html[x] = riga_ora
+#         orario_html[x] = riga_ora
 
-    save_cache(orario_html, path, files["orario_html"])  
-    save_cache(orario_ordinato, path, files["orario"])   
-    return orario_ordinato, orario_html
+#     save_cache(orario_html, path, files["orario_html"])  
+#     save_cache(orario_ordinato, path, files["orario"])   
+#     return orario_ordinato, orario_html
     
 
 

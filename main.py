@@ -129,7 +129,7 @@ def login():
                 # We don't return resp here, we let it fall through to render_template
             else:
                 # Unpack the list
-                voti_materia, voti_time, compiti_materia, compiti_time, materie, orario, orario_html, info, materie2 = response
+                voti_materia, voti_time, compiti_materia, compiti_time, materie, orario_html, info, materie2 = response
 
                 # Update dictionary (strings must be reassigned)
                 info["anno_scolastico"] = info["anno_scolastico"].replace("_", "/")
@@ -141,7 +141,7 @@ def login():
                     "compiti_materia": compiti_materia,
                     "compiti_time": compiti_time,
                     "materie": materie,
-                    "orario": orario,
+                    
                     "orario_html": orario_html,
                     "info": info,
                     "username": username,
