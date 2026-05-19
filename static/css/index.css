@@ -335,3 +335,54 @@
         font-weight: 800;
         color: var(--primary);
       }
+
+
+      /* Inline separator between current state and prediction */
+.calculator-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 28px 0;
+  width: 100%;
+}
+
+/* Subtle unique color variation for the target box using your design language */
+.metric-box.target-box {
+  background: linear-gradient(135deg, #e0f2fe 0%, #e0f2fe 100%); /* Soft slate/sky blue tint */
+}
+
+.metric-box.target-box span {
+  color: #0369a1; /* Matching darker blue for text clarity */
+}
+
+.metric-box.target-box .media {
+  color: #0369a1;
+}
+
+
+
+/* Ensure the numeric text input shares the exact layout parameters of the dropdowns */
+.container-avg input[type="number"] {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  outline: none;
+  box-sizing: border-box; /* Crucial to keep dimensions identical to select tags */
+  transition: border-color 0.2s;
+}
+
+.container-avg input[type="number"]:focus {
+  border-color: var(--primary);
+}
+
+/* Optional: Removes standard browser spinner arrows for a cleaner aesthetic */
+.container-avg input[type="number"]::-webkit-inner-spin-button,
+.container-avg input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

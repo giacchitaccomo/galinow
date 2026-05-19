@@ -66,11 +66,11 @@
         </div>
       </section>
 
-      <!-- Grade Calculator Interactive Block -->
       <section class="calculator-section">
-        <h4>Calcolo Media Voti</h4>
+        <h4>Calcolo e Predizione Voti</h4>
 
-        <div class="container-avg" id="container-avg">
+        <!-- Row 1: Current Average Inputs & Output -->
+        <div class="container-avg">
           <div class="select-group">
             <label for="subject">Materia</label>
             <select name="subject" id="subject">
@@ -91,8 +91,50 @@
           </div>
 
           <div class="metric-box">
-            <span>Media</span>
+            <span>Media Corrente</span>
             <p class="media" id="media">--</p>
+          </div>
+        </div>
+
+        <!-- Row Divider -->
+        <div class="calculator-divider"></div>
+
+        <!-- Row 2: Target Predictor Inputs & Output -->
+        <div class="container-avg">
+          <div class="select-group">
+            <label for="target-average">Media Obiettivo</label>
+            <input
+              type="number"
+              name="target-average"
+              id="target-average"
+              list="average-presets"
+              placeholder="Scegli o inserisci..."
+              min="1"
+              max="10"
+            />
+            <datalist id="average-presets">
+              <option value="6.0"></option>
+              <option value="6.5"></option>
+              <option value="7.0"></option>
+              <option value="7.5"></option>
+              <option value="8.0"></option>
+              <option value="8.5"></option>
+              <option value="9.0"></option>
+            </datalist>
+          </div>
+          <div class="select-group">
+            <label for="grades-count">Numero Verifiche Future</label>
+            <select name="grades-count" id="grades-count">
+              <option value="1">Nella prossima verifica</option>
+              <option value="2">Nelle prossime 2 verifiche</option>
+              <option value="3">Nelle prossime 3 verifiche</option>
+              <option value="4">Nelle prossime 4 verifiche</option>
+            </select>
+          </div>
+
+          <div class="metric-box target-box">
+            <span>Voto Necessario</span>
+            <p class="media" id="required-grade">--</p>
           </div>
         </div>
       </section>
@@ -134,17 +176,34 @@
       const quadrimestreScelta = document.getElementById("quadrimestre");
       const materiaScelta = document.getElementById("subject");
       const scrittaMedia = document.getElementById("media");
+      let sceltaMediaFuturoSelezione =
+        document.getElementById("target-average");
+      let numeroVotiFuturoSelezione = document.getElementById("grades-count");
+      let displayMediaFuturo = document.getElementById("required-grade");
 
-      quadrimestreScelta.addEventListener("change", compute);
-      materiaScelta.addEventListener("change", compute);
+      sceltaMediaFuturoSelezione.addEventListener("input", compute);
+      numeroVotiFuturoSelezione.addEventListener("input", compute);
+      quadrimestreScelta.addEventListener("input", compute);
+      materiaScelta.addEventListener("input", compute);
 
       compute();
 
       function compute() {
         let total = 0;
         let scored = 0;
+        let answerFuturo = "--";
+        let answer = "--";
+        let totaliVotiFuturo = 0;
+        let numeroVotiFuturo = Number(numeroVotiFuturoSelezione.value);
+        let mediaObiettivo = Number(sceltaMediaFuturoSelezione.value);
         const quadrimestre = quadrimestreScelta.value;
         const materia = materiaScelta.value;
+
+        if (mediaObiettivo > 10) {
+          sceltaMediaFuturoSelezione.value =
+            sceltaMediaFuturoSelezione.value.slice(0, -1);
+          mediaObiettivo = sceltaMediaFuturoSelezione.value;
+        }
 
         for (const idx in votiNew) {
           if (
@@ -160,12 +219,35 @@
         }
 
         if (scored > 0) {
-          total = (total / scored).toFixed(1);
+          answer = (total / scored).toFixed(2);
         } else {
-          total = "Nessuno";
+          answer = "--";
+        }
+        if (mediaObiettivo > 0) {
+          totaliVotiFuturo = scored + numeroVotiFuturo;
+          answerFuturo = (
+            (mediaObiettivo * totaliVotiFuturo - total) /
+            numeroVotiFuturo
+          ).toFixed(2);
+        } else {
+          answerFuturo = "--";
         }
 
-        scrittaMedia.innerText = total;
+        console.log(
+          "Per avere una media del ",
+          mediaObiettivo,
+          "con voti in più:",
+          numeroVotiFuturo,
+          "e avendo gia voti",
+          scored,
+          "per avere in tutto una media di",
+          mediaObiettivo * totaliVotiFuturo,
+          "ho bisogno di",
+          answerFuturo,
+        );
+
+        scrittaMedia.innerText = answer;
+        displayMediaFuturo.innerText = answerFuturo;
       }
     </script>
   </body>
