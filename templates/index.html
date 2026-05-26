@@ -53,23 +53,19 @@
       <!-- Quick Context Links / Mock Dashboard items -->
       <section class="quick-grid">
         <div class="quick-card">
-          <p>Compiti Imminenti</p>
-          <a href="#">Vedi di più</a>
-        </div>
-        <div class="quick-card">
-          <p>Materie di Oggi</p>
-          <a href="#">Vedi registro</a>
-        </div>
-        <div class="quick-card">
           <p>Privacy Policy</p>
-          <a href="#">Leggi</a>
+          <a
+            href="https://www.iubenda.com/privacy-policy/52550761"
+            class="iubenda-white iubenda-noiframe iubenda-embed"
+            title="Privacy Policy "
+            >Leggi</a
+          >
         </div>
       </section>
 
       <section class="calculator-section">
         <h4>Calcolo e Predizione Voti</h4>
 
-        <!-- Row 1: Current Average Inputs & Output -->
         <div class="container-avg">
           <div class="select-group">
             <label for="subject">Materia</label>
@@ -249,6 +245,23 @@
         scrittaMedia.innerText = answer;
         displayMediaFuturo.innerText = answerFuturo;
       }
+    </script>
+    <script type="text/javascript">
+      (function (w, d) {
+        var loader = function () {
+          var s = d.createElement("script"),
+            tag = d.getElementsByTagName("script")[0];
+          s.src = "https://cdn.iubenda.com/iubenda.js";
+          tag.parentNode.insertBefore(s, tag);
+        };
+        if (w.addEventListener) {
+          w.addEventListener("load", loader, false);
+        } else if (w.attachEvent) {
+          w.attachEvent("onload", loader);
+        } else {
+          w.onload = loader;
+        }
+      })(window, document);
     </script>
   </body>
 </html>

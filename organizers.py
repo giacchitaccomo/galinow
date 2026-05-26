@@ -100,32 +100,22 @@ def initialize(path, username, password):
 def categorize_subjects(subjects, path):   
     materie = {}
     materie2 = {}
-   
-    
+
     for x in subjects:
         prof = x["professori"][0]["nome"]
-        nome = x["descrizione"]
         id_materia = x["id"]
-        
+
         materie2[id_materia] = {
             "professore" : prof,
-            "nome" : nome,  
+            "nome" : x["descrizione"],  
         }
-        
-    for x in subjects:
-        prof = x["professori"][0]["nome"]
-        nome = x["nome_materia_sito"]
-        id_materia = x["id"]
-        
         materie[id_materia] = {
             "professore" : prof,
-            "nome" : nome,  
+            "nome" : x["nome_materia_sito"],  
         }
-    
-    save_cache(materie, path, files["materie"] )
 
-        
-    return materie, materie2     
+    save_cache(materie, path, files["materie"])
+    return materie, materie2
         
 
 def catalog_info(answer, path):
@@ -153,71 +143,6 @@ def catalog_info(answer, path):
     info["headers"] = headers
     save_cache(info, path, files["info"])
     return info
-
-
-# def catalog_orario(orario, path, materie):
-#     orario_org = defaultdict(list)
-#     corrette = fetch_cache(path, "materie_corrette.txt")
-#     last_weight = -1
-#     last_seen = ""
-#     orario_pulito = []
-    
-#     for x in range(len(orario)):
-#         obj = orario[x]
-#         nome = materie[obj["id_materia"]]["nome"]
-#         weight = corrette[nome][1]
-#         ora = obj["data_ora_inizio"]
-        
-#         orario_pulito.append(obj)
-#         if last_seen == ora:
-#             if last_weight > weight:
-#                 orario_pulito.pop()
-#             else:
-#                 orario_pulito.pop(-2)
-                
-#         last_seen = ora
-#         last_weight = weight
-
-    
-    
-#     for obj in orario_pulito:
-
-#         orario_org[get_day(obj["data_ora_inizio"][:10])].append(corrette[materie[obj["id_materia"]]["nome"]][0]) 
-        
-
-#     orario_ordinato = dict(sorted(orario_org.items()))
-    
-#     orario_html = {}
-
-#     giorni_chiavi = [0, 1, 2, 3, 4, 5] 
-#     orario_html = {}
-
-#     for x in range(8):
-#         if x == 5:
-  
-#             orario_html[x] = "PAUSA"
-#             continue
-        
-#         # x_adj serve per saltare l'indice della pausa
-  
-#         x_adj = x if x < 5 else x - 1
-#         riga_ora = []
-        
-#         for g in giorni_chiavi:
-#             # orario_ordinato deve essere il dict {giorno: [materie]}
-#             materie_giorno = orario_ordinato.get(g, [])
-            
-#             if len(materie_giorno) > x_adj:
-#                 riga_ora.append(materie_giorno[x_adj])
-#             else:
-#                 riga_ora.append("") # Cella vuota se non c'è lezione
-        
-#         orario_html[x] = riga_ora
-
-#     save_cache(orario_html, path, files["orario_html"])  
-#     save_cache(orario_ordinato, path, files["orario"])   
-#     return orario_ordinato, orario_html
-    
 
 
 def parse_ISO(d):
